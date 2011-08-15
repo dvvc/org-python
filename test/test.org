@@ -1,38 +1,31 @@
 # foo
 #+TITLE: XXX
 
-sgdkajlskd jlaksjg aksjd lkajdk jalsj lkjelk jkej lajel kajelk jalekj alkej
-lakje lakje kajel ajlek jalej lakej lakjel ajlek jalek jlakej lakjek emk mk mk
-mk m km kmkme lakmelk ale
+ZERO
+
+** Zero.One
+
+* One
+
+** One.One
+
+** One.Two
+
+*** One.Two.One
+
+** One.Three
+
+* Two
+
+init: PREV = H(0)
+
+Si L > PREV.level:
+  PREV.append(H)
+Si L == PREV.level:
+  PREV.parent.append(H)
+Si L < PREV.level:
+  While True:
+    PREV = PREV.parent
+	
 
 
-* Block
-
-This is a block?
-
-foo bar baz  kjl kjl jlk jlk jlkaej lkej lkalek jlkejl kjlek jlkejl keljg
-lkejlkg elkj gllekjlg kjlekl el kjlkej kjslk jlkejl kajlekj lkejk jlakjlekal
-kjal kjalk jlkej lkajek jek jkej kej ke jek jeij igjlekjg kjel jlej lkej lkej
-lkej lkej lkej lkej lkj lkajlekj kja;ekl lke lme kme kme km k mm mmm m kekrek
-jkejka jek jkaejk ejtkj akej kejt kaejtk ejkt jektjakej kaejtk aejkt ajekj keja
-kejake jakej kaejk ajkejkjggk  jj  j k k k jk jk j k jekj akejlka elkaj lekjalk
-ejalk eal
-
-* Boo
-
-lkgjlaksjdlgk alskdjg lkj
-
-** Baah 
-
-   -  aeg asg aseg aeg aeg aseg ae a kjk jl
-	 + boo
-
-   - b
-	 
-*** Beeeh
-lkjl
-
-sdg
-'
-'
-s

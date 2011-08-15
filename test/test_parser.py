@@ -59,3 +59,56 @@ class TestParser(unittest.TestCase):
             self.assertEqual(headline_node.text, text)
 
         
+    def test_headlines_successors(self):
+        """Adding multiple headlines with higher level makes them children of
+        the previous one.
+        """
+        headline_str = "* First level\n** Second level\n*** Third level"
+        doc = parser.parse(headline_str)
+        self.assertEqual(len(doc.children()), 1)
+
+        h1 = doc.children()[0]
+        self.assertEqual(len(h1.children), 1)
+
+        h2 = h1.children[0]
+        self.assertEqual(len(h2.children), 1)
+
+        h3 = h2.children[0]
+        self.assertEqual(len(h3.children), 0)
+
+
+    def test_headlines_samelevel(self):
+        """Adding a headline with the same level as the previous one attaches it
+        to the previous' parent.
+        """
+        headline_str = "* One\n** Two\n** Two\n**\
+        Another one"
+        doc = parser.parse(headline_str)
+        self.assertEqual(len(doc.children()), 1)
+
+        h1 = doc.children()[0]
+        self.assertEqual(len(h1.children), 3)
+
+    def test_headlines_predecessors(self):
+        """Adding a headline with a lower level than the previous one makes the
+        new one a direct child of the previous' first ancestor with lower level
+        than the new one.
+        """
+        headline_str = "* One\n** Two\n*** Three\n** Two\n*** Three\n* One"
+
+        doc = parser.parse(headline_str)
+        self.assertEqual(len(doc.children()), 2)
+
+        h1_1 = doc.children()[0]
+        h1_2 = doc.children()[1]
+
+        self.assertEqual(len(h1_1.children), 2)
+        self.assertEqual(len(h1_2.children), 0)
+
+        h2_1 = h1_1.children[0]
+        h2_2 = h1_1.children[1]
+
+        self.assertEqual(len(h2_1.children), 1)
+        self.assertEqual(len(h2_2.children), 1)
+
+ 
