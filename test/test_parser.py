@@ -19,12 +19,12 @@ class TestParser(unittest.TestCase):
 
 
     def test_comments(self):
-        """Comments are disregarded"""
+        """Comments create a CommentNode"""
 
         comment_str = "# This is a comment\n# This is another comment"
         doc = parser.parse(comment_str)
 
-        self.assertEqual(len(doc.children()), 0)
+        self.assertEqual(len(doc.children()), 2)
 
         
 
@@ -111,4 +111,18 @@ class TestParser(unittest.TestCase):
         self.assertEqual(len(h2_1.children), 1)
         self.assertEqual(len(h2_2.children), 1)
 
+    # Perhaps test some edge cases of headlines?
  
+    def test_doc_representation(self):
+        """Just having a default representation of the document for easier
+        debugging.
+        """
+        # NOTE: Consider whether the representation should be the same as the
+        # oiginal text, or whether it should prettify it. (E.g. multiple \n's)
+        
+        doc_str = "# This is a comment\n* One\nText text"
+        doc = parser.parse(doc_str)
+
+        self.assertEqual(str(doc), doc_str)
+
+        

@@ -7,7 +7,10 @@ Supported features:
   - Comments
   - Text
   - Headlines
-  
+
+TODO: When adding a node to the hierarchy, having to add the parent in the
+constructor and then calling append is redundant  
+TODO: Should we consider Comments as nodes? or just disregard them?
 """
 import re
 import StringIO
@@ -23,6 +26,9 @@ class OrgDoc:
     def children(self):
         return self.root.children
 
+    def __str__(self):
+        return str(self.root)
+
 class OrgNode:
     """A node"""
     def __init__(self, parent):
@@ -32,11 +38,24 @@ class OrgNode:
     def append(self, child):
         self.children.append(child)
 
+    def __str__(self):
+        return "".join([str(ch) for ch in self.children])
+        
+
 # TODO: Not sure if treating lines as children is intuitive
 class TextNode(OrgNode):
     """Just text"""
     def __init__(self, parent):
         OrgNode.__init__(self, parent)
+
+class CommentNode(OrgNode):
+    def __init__(self, parent, text):
+        OrgNode.__init__(self, parent)
+        self.text = text
+
+    def __str__(self):
+        return '#' + self.text
+
     
 class HeadlineNode(OrgNode):
     """A headline"""
@@ -44,7 +63,16 @@ class HeadlineNode(OrgNode):
         OrgNode.__init__(self, parent)
         self.level = level
         self.text = text
-    
+
+    def __str__(self):
+
+        if self.level != 0:
+            hl_str = self.level * '*' + ' ' + self.text + '\n'
+        else:
+            hl_str= ''
+
+        children_str = OrgNode.__str__(self)
+        return hl_str + children_str
 
 class LineMatcher:
     """Helper class for compiling all possible patterns and performing line by
@@ -110,7 +138,9 @@ def parse(doc):
     for line in doc_handle:
     
         if matcher.matches(line, 'COMMENT'):
-            pass
+            comment_node = CommentNode(orgdoc.root, line[1:])
+            orgdoc.root.append(comment_node)
+
         elif matcher.matches(line, 'HEADLINE'):
             level = matcher.match.group(1).count('*')
             text = matcher.match.group(2)
