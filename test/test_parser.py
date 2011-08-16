@@ -117,12 +117,13 @@ class TestParser(unittest.TestCase):
         """Just having a default representation of the document for easier
         debugging.
         """
-        # NOTE: Consider whether the representation should be the same as the
-        # oiginal text, or whether it should prettify it. (E.g. multiple \n's)
-        
         doc_str = "# This is a comment\n* One\nText text"
         doc = parser.parse(doc_str)
 
         self.assertEqual(str(doc), doc_str)
 
+        doc_str = "Text\nMore text\n\n\nSome empty lines and text\n* HL"
+        doc = parser.parse(doc_str)
+
+        self.assertEqual(str(doc), doc_str)
         

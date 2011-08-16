@@ -39,7 +39,7 @@ class OrgNode:
         self.children.append(child)
 
     def __str__(self):
-        return "".join([str(ch) for ch in self.children])
+        return '\n'.join([str(ch) for ch in self.children])
         
 
 # TODO: Not sure if treating lines as children is intuitive
@@ -67,7 +67,7 @@ class HeadlineNode(OrgNode):
     def __str__(self):
 
         if self.level != 0:
-            hl_str = self.level * '*' + ' ' + self.text + '\n'
+            hl_str = self.level * '*' + ' ' + self.text
         else:
             hl_str= ''
 
@@ -137,6 +137,8 @@ def parse(doc):
 
     for line in doc_handle:
     
+        line = line.strip('\n')
+
         if matcher.matches(line, 'COMMENT'):
             comment_node = CommentNode(orgdoc.root, line[1:])
             orgdoc.root.append(comment_node)
