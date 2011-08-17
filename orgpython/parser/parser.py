@@ -8,8 +8,6 @@ Supported features:
   - Text
   - Headlines
 
-TODO: When adding a node to the hierarchy, having to add the parent in the
-constructor and then calling append is redundant  
 """
 import re
 import StringIO
@@ -33,6 +31,8 @@ class OrgNode:
     def __init__(self, parent):
         self.children = []
         self.parent = parent
+        if parent:
+            parent.append(self)
 
     def append(self, child):
         self.children.append(child)
@@ -174,7 +174,6 @@ def parse(doc):
 
         if matcher.matches(line, 'COMMENT'):
             comment_node = CommentNode(orgdoc.root, line[1:])
-            orgdoc.root.append(comment_node)
 
         elif matcher.matches(line, 'HEADLINE'):
             level = matcher.match.group(1).count('*')
@@ -183,7 +182,6 @@ def parse(doc):
             parent = __find_parent(level, prev_hl)
 
             headline_node = HeadlineNode(parent, level, text)
-            parent.append(headline_node)
             prev_node = headline_node
             prev_hl = headline_node
             prev_list = None
@@ -200,7 +198,6 @@ def parse(doc):
                 parent = __find_parent(level, prev_list)
             
             list_node = OrderedListNode(parent, number, char, level, text)
-            parent.append(list_node)
             prev_list = list_node
             prev_node = list_node
 
@@ -216,14 +213,13 @@ def parse(doc):
                 parent = __find_parent(level, prev_list)
             
             list_node = UnorderedListNode(parent, char, level, text)
-            parent.append(list_node)
             prev_list = list_node
             prev_node = list_node
 
         else:
+            # FIXME: Right now each line is a TextNode with a single child
             text_node = TextNode(prev_node)
             text_node.append(line)
-            prev_node.append(text_node)
 
     doc_handle.close()
 
