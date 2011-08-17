@@ -131,7 +131,7 @@ class TestParser(unittest.TestCase):
 
         self.assertEqual(str(doc), doc_str)
         
-    def test_ul_lists(self):
+    def test_unordered_lists(self):
         """List items start with zero or more spaces, a list character (which
         can be either -, + or *), a space and some text
         """
@@ -141,7 +141,7 @@ class TestParser(unittest.TestCase):
         self.assertEqual(len(doc.children()), 3)
 
         li1 = doc.children()[0]
-        self.assertTrue(isinstance(li1, parser.ListNode))
+        self.assertTrue(isinstance(li1, parser.UnorderedListNode))
         self.assertEqual(li1.char, '-')
         self.assertEqual(li1.level, 0)
         self.assertEqual(li1.text, 'Item 1')
@@ -173,3 +173,29 @@ class TestParser(unittest.TestCase):
 
         li = hl2.children[0]
         self.assertEqual(len(li.children), 1)
+
+
+    def test_ordered_lists(self):
+        """Ordered lists are the same as Unordered ones, but have numbers and
+        either the character '.' or ')' after it
+        """
+
+        list_str = '1. One'
+        
+        doc = parser.parse(list_str)
+        self.assertEqual(len(doc.children()), 1)
+
+        ol = doc.children()[0]
+        self.assertTrue(isinstance(ol, parser.OrderedListNode))
+
+        self.assertEqual(str(doc), list_str)
+
+        list_str = '- One\n 1. OneOne\n 2. OneTwo'
+
+        doc = parser.parse(list_str)
+        self.assertEqual(len(doc.children()), 1)
+
+        ul = doc.children()[0]
+        self.assertEqual(len(ul.children), 2)
+
+        

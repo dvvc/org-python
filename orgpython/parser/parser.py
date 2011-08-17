@@ -78,8 +78,8 @@ class HeadlineNode(OrgNode):
 
         return hl_str + children_str
 
-class ListNode(OrgNode):
-    """A list item"""
+class UnorderedListNode(OrgNode):
+    """An unordered list item"""
     def __init__(self, parent, char, level, text):
         OrgNode.__init__(self, parent)
         self.char = char 
@@ -96,6 +96,12 @@ class ListNode(OrgNode):
 
         return hl_str + children_str
 
+
+class OrderedListNode(UnorderedListNode):
+    """An ordered list node"""
+    def __init__(self, parent, number, char, level, text):
+        UnorderedListNode.__init__(self, parent, number+char, level, text)
+
 class LineMatcher:
     """Helper class for compiling all possible patterns and performing line by
     line matching.
@@ -104,7 +110,8 @@ class LineMatcher:
     RE = {'COMMENT': re.compile(r'^#.*'),
           'OPTION': re.compile(r'^#\+([A-Z_]+):(.*)$'),
           'HEADLINE': re.compile(r'^(\*+)\s(.*)$'),
-          'LIST': re.compile(r'^(\s*)([\+\-\*])\s(.*)$')
+          'ULIST': re.compile(r'^(\s*)([\+\-\*])\s(.*)$'),
+          'OLIST': re.compile(r'^(\s*)(\d+)([\.\)])\s(.*)$')
 
           }
 
@@ -181,7 +188,24 @@ def parse(doc):
             prev_hl = headline_node
             prev_list = None
 
-        elif matcher.matches(line, 'LIST'):
+        elif matcher.matches(line, 'OLIST'):
+            level = len(matcher.match.group(1))
+            number = matcher.match.group(2)
+            char = matcher.match.group(3)
+            text = matcher.match.group(4)
+
+            if prev_list == None:
+                parent = prev_node
+            else:
+                parent = __find_parent(level, prev_list)
+            
+            list_node = OrderedListNode(parent, number, char, level, text)
+            parent.append(list_node)
+            prev_list = list_node
+            prev_node = list_node
+
+
+        elif matcher.matches(line, 'ULIST'):
             level = len(matcher.match.group(1))
             char = matcher.match.group(2)
             text = matcher.match.group(3)
@@ -191,7 +215,7 @@ def parse(doc):
             else:
                 parent = __find_parent(level, prev_list)
             
-            list_node = ListNode(parent, char, level, text)
+            list_node = UnorderedListNode(parent, char, level, text)
             parent.append(list_node)
             prev_list = list_node
             prev_node = list_node
