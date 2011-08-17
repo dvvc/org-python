@@ -10,7 +10,6 @@ Supported features:
 
 TODO: When adding a node to the hierarchy, having to add the parent in the
 constructor and then calling append is redundant  
-TODO: Should we consider Comments as nodes? or just disregard them?
 """
 import re
 import StringIO
@@ -64,6 +63,7 @@ class HeadlineNode(OrgNode):
         self.level = level
         self.text = text
 
+    # FIXME: Ugly!
     def __str__(self):
 
         if self.level != 0:
@@ -72,6 +72,28 @@ class HeadlineNode(OrgNode):
             hl_str= ''
 
         children_str = OrgNode.__str__(self)
+
+        if children_str != '' and self.level != 0:
+            hl_str += '\n'
+
+        return hl_str + children_str
+
+class ListNode(OrgNode):
+    """A list item"""
+    def __init__(self, parent, char, level, text):
+        OrgNode.__init__(self, parent)
+        self.char = char 
+        self.level = level
+        self.text = text
+
+
+    def __str__(self):
+        hl_str = self.level * ' ' + self.char + ' ' + self.text
+        children_str = OrgNode.__str__(self)
+
+        if children_str != '':
+            hl_str += '\n'
+
         return hl_str + children_str
 
 class LineMatcher:
@@ -81,7 +103,9 @@ class LineMatcher:
     ## List of regexes
     RE = {'COMMENT': re.compile(r'^#.*'),
           'OPTION': re.compile(r'^#\+([A-Z_]+):(.*)$'),
-          'HEADLINE': re.compile(r'^(\*+)\s+(.*)$')
+          'HEADLINE': re.compile(r'^(\*+)\s(.*)$'),
+          'LIST': re.compile(r'^(\s*)([\+\-\*])\s(.*)$')
+
           }
 
     def __init__(self):
@@ -134,6 +158,8 @@ def parse(doc):
     matcher = LineMatcher()
 
     prev_node = orgdoc.root
+    prev_hl = orgdoc.root
+    prev_list = None
 
     for line in doc_handle:
     
@@ -147,15 +173,33 @@ def parse(doc):
             level = matcher.match.group(1).count('*')
             text = matcher.match.group(2)
 
-            parent = __find_parent(level, prev_node)
+            parent = __find_parent(level, prev_hl)
 
             headline_node = HeadlineNode(parent, level, text)
             parent.append(headline_node)
             prev_node = headline_node
+            prev_hl = headline_node
+            prev_list = None
+
+        elif matcher.matches(line, 'LIST'):
+            level = len(matcher.match.group(1))
+            char = matcher.match.group(2)
+            text = matcher.match.group(3)
+            print 'List level %d, text %s' % (level, text)
+            if prev_list == None:
+                parent = prev_node
+            else:
+                parent = __find_parent(level, prev_list)
+            
+            list_node = ListNode(parent, char, level, text)
+            parent.append(list_node)
+            prev_list = list_node
+            prev_node = list_node
+
         else:
             text_node = TextNode(prev_node)
             text_node.append(line)
-            orgdoc.root.append(text_node)
+            prev_node.append(text_node)
 
     doc_handle.close()
 

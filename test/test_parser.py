@@ -111,8 +111,7 @@ class TestParser(unittest.TestCase):
         self.assertEqual(len(h2_1.children), 1)
         self.assertEqual(len(h2_2.children), 1)
 
-    # Perhaps test some edge cases of headlines?
- 
+
     def test_doc_representation(self):
         """Just having a default representation of the document for easier
         debugging.
@@ -126,4 +125,51 @@ class TestParser(unittest.TestCase):
         doc = parser.parse(doc_str)
 
         self.assertEqual(str(doc), doc_str)
+
+        doc_str = "- List one\n + Slist one\n + Slist two"
+        doc = parser.parse(doc_str)
+
+        self.assertEqual(str(doc), doc_str)
         
+    def test_ul_lists(self):
+        """List items start with zero or more spaces, a list character (which
+        can be either -, + or *), a space and some text
+        """
+        list_str = '- Item 1\n- Item 2\n- Item 3'
+        doc = parser.parse(list_str)
+
+        self.assertEqual(len(doc.children()), 3)
+
+        li1 = doc.children()[0]
+        self.assertTrue(isinstance(li1, parser.ListNode))
+        self.assertEqual(li1.char, '-')
+        self.assertEqual(li1.level, 0)
+        self.assertEqual(li1.text, 'Item 1')
+        
+        list_str = '* Headline 1\n- One\n + One.One\n + One.Two'
+        doc = parser.parse(list_str)
+
+        self.assertEqual(len(doc.children()), 1)
+
+        hl = doc.children()[0]
+        self.assertEqual(len(hl.children), 1)
+        
+        li = hl.children[0]
+        self.assertEqual(len(li.children), 2)
+
+        list_str = '* H\n- L\ntext\n** H\n + L\n  + L'
+        doc = parser.parse(list_str)
+
+        self.assertEqual(len(doc.children()), 1)
+        
+        hl = doc.children()[0]
+        self.assertEqual(len(hl.children), 2)
+
+        li = hl.children[0]
+        self.assertEqual(len(li.children), 1)
+
+        hl2 = hl.children[1]
+        self.assertEqual(len(hl2.children), 1)
+
+        li = hl2.children[0]
+        self.assertEqual(len(li.children), 1)

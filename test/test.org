@@ -1,35 +1,24 @@
 # foo
 #+TITLE: XXX
 
-# foo
-
-
-
-ZERO
-
-** Zero.One
-
 * One
 
-** One.One
+** Two
 
-** One.Two
+   - L1
+   - L2
+	 - L3
 
-*** One.Two.One
-
-** One.Three
-
-* Two
-
-init: PREV = H(0)
-
-Si L > PREV.level:
-  PREV.append(H)
-Si L == PREV.level:
-  PREV.parent.append(H)
-Si L < PREV.level:
-  While True:
-    PREV = PREV.parent
-	
+*** Three [0/2] boar [0%]
+	- [ ]      L4 with a checkbox
+	- [ ] X
 
 
+
+
+* H
+- L
+  text
+** H
+ + L
+  + L
