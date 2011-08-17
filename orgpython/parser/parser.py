@@ -185,7 +185,7 @@ def parse(doc):
             level = len(matcher.match.group(1))
             char = matcher.match.group(2)
             text = matcher.match.group(3)
-            print 'List level %d, text %s' % (level, text)
+
             if prev_list == None:
                 parent = prev_node
             else:
