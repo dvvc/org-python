@@ -18,7 +18,8 @@ class OrgDoc:
     def __init__(self):
         # this is a special Headline, which shouldn't be printed. It is just
         # used to keep the tree hierarchy
-        self.root = HeadlineNode(None, 0, None) 
+        self.root = HeadlineNode(None, 0, None)
+        self.options = {}
 
     def children(self):
         return self.root.children
@@ -41,11 +42,12 @@ class OrgNode:
         return '\n'.join([str(ch) for ch in self.children])
         
 
-# TODO: Not sure if treating lines as children is intuitive
 class TextNode(OrgNode):
     """Just text"""
-    def __init__(self, parent):
+    def __init__(self, parent, line):
         OrgNode.__init__(self, parent)
+        # treat the text line as the only child of the node
+        self.append(line)
 
 class CommentNode(OrgNode):
     def __init__(self, parent, text):
@@ -112,7 +114,6 @@ class LineMatcher:
           'HEADLINE': re.compile(r'^(\*+)\s(.*)$'),
           'ULIST': re.compile(r'^(\s*)([\+\-\*])\s(.*)$'),
           'OLIST': re.compile(r'^(\s*)(\d+)([\.\)])\s(.*)$')
-
           }
 
     def __init__(self):
@@ -172,8 +173,16 @@ def parse(doc):
     
         line = line.strip('\n')
 
-        if matcher.matches(line, 'COMMENT'):
-            comment_node = CommentNode(orgdoc.root, line[1:])
+        if matcher.matches(line, 'OPTION'):
+            key = matcher.match.group(1)
+            value = matcher.match.group(2).strip()
+            orgdoc.options[key] = value
+
+            # add the option line to the tree hierarchy to keep all info
+            CommentNode(orgdoc.root, line[1:])
+
+        elif matcher.matches(line, 'COMMENT'):
+            CommentNode(orgdoc.root, line[1:])
 
         elif matcher.matches(line, 'HEADLINE'):
             level = matcher.match.group(1).count('*')
@@ -217,9 +226,7 @@ def parse(doc):
             prev_node = list_node
 
         else:
-            # FIXME: Right now each line is a TextNode with a single child
-            text_node = TextNode(prev_node)
-            text_node.append(line)
+            TextNode(prev_node, line)
 
     doc_handle.close()
 

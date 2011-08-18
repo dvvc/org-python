@@ -199,3 +199,13 @@ class TestParser(unittest.TestCase):
         self.assertEqual(len(ul.children), 2)
 
         
+    def test_options(self):
+        """The document may have options in the form #+NAME: VALUE"""
+
+        options_str = '# One comment\n#+TITLE: The title'
+
+        doc = parser.parse(options_str)
+
+        self.assertEqual(doc.options['TITLE'], 'The title')
+
+        self.assertEqual(str(doc), options_str)
