@@ -32,7 +32,8 @@ def org_to_html(tree):
         if class_name == 'HeadlineNode':
             if el.level != 0:
                 output.write("<h%d>%s</h%d>\n" % (el.level, el.text, el.level))
-    
+        elif class_name == 'TextNode':
+            output.write('<p>%s</p>\n' % str(el))
         # End Handling the node
 
         elements = el.children + elements
