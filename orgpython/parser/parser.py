@@ -44,10 +44,12 @@ class OrgNode:
 
 class TextNode(OrgNode):
     """Just text"""
-    def __init__(self, parent, line):
+    def __init__(self, parent):
         OrgNode.__init__(self, parent)
-        # treat the text line as the only child of the node
-        self.append(line)
+        self.lines = []
+
+    def __str__(self):
+        return "\n".join(self.lines)
 
 class CommentNode(OrgNode):
     def __init__(self, parent, text):
@@ -113,7 +115,8 @@ class LineMatcher:
           'OPTION': re.compile(r'^#\+([A-Z_]+):(.*)$'),
           'HEADLINE': re.compile(r'^(\*+)\s(.*)$'),
           'ULIST': re.compile(r'^(\s*)([\+\-\*])\s(.*)$'),
-          'OLIST': re.compile(r'^(\s*)(\d+)([\.\)])\s(.*)$')
+          'OLIST': re.compile(r'^(\s*)(\d+)([\.\)])\s(.*)$'),
+          'EMPTYLINE': re.compile(r'^\s*$'),
           }
 
     def __init__(self):
@@ -168,6 +171,7 @@ def parse(doc):
     prev_node = orgdoc.root
     prev_hl = orgdoc.root
     prev_list = None
+    prev_text = None
 
     for line in doc_handle:
     
@@ -194,6 +198,7 @@ def parse(doc):
             prev_node = headline_node
             prev_hl = headline_node
             prev_list = None
+            prev_text = None
 
         elif matcher.matches(line, 'OLIST'):
             level = len(matcher.match.group(1))
@@ -209,6 +214,7 @@ def parse(doc):
             list_node = OrderedListNode(parent, number, char, level, text)
             prev_list = list_node
             prev_node = list_node
+            prev_text = None
 
 
         elif matcher.matches(line, 'ULIST'):
@@ -224,9 +230,24 @@ def parse(doc):
             list_node = UnorderedListNode(parent, char, level, text)
             prev_list = list_node
             prev_node = list_node
+            prev_text = None
 
+        elif matcher.matches(line, 'EMPTYLINE'):
+            # An empty line starts a new TextNode. We add an empty TextNode to
+            # keep all information. In 'prettified' output those shouldn't be
+            # used 
+            prev_text = None
+            TextNode(prev_node)
         else:
-            TextNode(prev_node, line)
+            # Text
+            if prev_text:
+                # Add the line to the previous TextNode
+                prev_text.lines.append(line)
+            else:
+                # start a new TextNode
+                prev_text = TextNode(prev_node)
+                prev_text.lines.append(line)
+
 
     doc_handle.close()
 

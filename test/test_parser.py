@@ -39,8 +39,7 @@ class TestParser(unittest.TestCase):
         text_node = doc.children()[0]
 
         self.assertTrue(isinstance(text_node, parser.TextNode))
-        self.assertEqual(len(text_node.children), 1)
-        self.assertEqual(text_node.children[0], text_str)
+        self.assertEqual(len(text_node.children), 0)
 
 
     def test_single_headline(self):

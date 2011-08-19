@@ -1,24 +1,7 @@
 # foo
 #+TITLE: XXX:foo
 
-
-* One
-
-** Two
-
-   - L1
-   - L2
-	 - L3
-
-*** Three [0/2] boar [0%]
-	- [ ]      L4 with a checkbox
-	- [ ] X
-
-
-
-
-* H
-- L
-  text
-** H
-   1 foo
+text
+text2
+# foo
+text3
