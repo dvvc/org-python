@@ -22,7 +22,10 @@ class EnterElement:
             return '<p>%s</p>' % str(self.element)
 
         elif class_name == 'ListNode':
-            return '<ul>'
+            if self.element.ordered:
+                return '<ol>'
+            else:
+                return '<ul>'
         elif class_name == 'ListItemNode':
             return'<li>%s' % self.element.text
         
@@ -35,7 +38,10 @@ class LeaveElement:
         class_name = self.element.__class__.__name__
 
         if class_name == 'ListNode':
-            return '</ul>'
+            if self.element.ordered:
+                return '</ol>'
+            else:
+                return '</ul>'
         elif class_name == 'ListItemNode':
             return '</li>'
 

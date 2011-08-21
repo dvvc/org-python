@@ -88,6 +88,7 @@ class ListNode(OrgNode):
         OrgNode.__init__(self, parent)
         self.char = char
         self.level = level
+        self.ordered = char[0].isdigit()
 
 class ListItemNode(OrgNode):
     
