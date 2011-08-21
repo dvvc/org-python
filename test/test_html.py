@@ -56,3 +56,13 @@ class TestHtml(unittest.TestCase):
         doc_str = '1. One\n2. Two'
         doc = parser.parse(doc_str)
         self.assertEqual(org_to_html(doc), '<ol><li>One</li><li>Two</li></ol>')
+
+        doc_str = '- A\n 1. B\n 2. C'
+        doc = parser.parse(doc_str)
+        self.assertEqual(org_to_html(doc), '<ul><li>A<ol><li>B</li><li>C</li>\
+</ol></li></ul>')
+
+        doc_str = '- A\n   - B\n  - C'
+        doc = parser.parse(doc_str)
+        self.assertEqual(org_to_html(doc), '<ul><li>A<ul><li>B</li></ul><ul>\
+<li>C</li></ul></li></ul>')
