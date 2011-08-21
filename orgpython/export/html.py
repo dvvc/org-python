@@ -4,7 +4,7 @@ Parsed Org-Tree to HTML conversion
 """
 
 import StringIO
-
+import re
 
 class EnterElement:
     def __init__(self, element):
@@ -19,7 +19,13 @@ class EnterElement:
                                           self.element.level)
 
         elif class_name == 'TextNode':
-            return '<p>%s</p>' % str(self.element)
+            # convert formatted words
+            text = str(self.element)
+            text = re.sub(r'/([^/]*)/', r'<i>\1</i>', text)
+            text = re.sub(r'\*([^*]*)\*', r'<b>\1</b>', text)
+            text = re.sub(r'_([^_]*)_', r'<u>\1</u>', text)
+
+            return '<p>%s</p>' % text
 
         elif class_name == 'ListNode':
             if self.element.ordered:

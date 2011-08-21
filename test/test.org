@@ -2,18 +2,5 @@
 #+TITLE: XXX:foo
 
 * HL
-- L0
-   - L3
-  - L2
- - L1
 
-	
-* HL
-
-- L0
-
-    - L3
-
-  - L2
-
- - L1
+* A title with a [[link][foo]] *foo* 
