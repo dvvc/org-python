@@ -21,34 +21,33 @@ class TestHtml(unittest.TestCase):
 
         doc_str = '* Hello'
         doc = parser.parse(doc_str)
-        self.assertEqual(org_to_html(doc), '<h1>Hello</h1>\n')
+        self.assertEqual(org_to_html(doc), '<h1>Hello</h1>')
 
         doc_str = '* One\n** One.One\n** One.Two\n*** One.Two.One'
         doc = parser.parse(doc_str)
         self.assertEqual(org_to_html(doc), 
-                         '<h1>One</h1>\n<h2>One.One</h2>\n<h2>One.Two</h2>\n\
-<h3>One.Two.One</h3>\n')
+                         '<h1>One</h1><h2>One.One</h2><h2>One.Two</h2>\
+<h3>One.Two.One</h3>')
 
     def test_text(self):
         """Text nodes should be enclosed in <p> tags"""
 
         doc_str = 'Just some text'
         doc = parser.parse(doc_str)
-        self.assertEqual(org_to_html(doc), '<p>Just some text</p>\n')
+        self.assertEqual(org_to_html(doc), '<p>Just some text</p>')
 
         doc_str = 'Text line 1\nText line 2'
         doc = parser.parse(doc_str)
-        self.assertEqual(org_to_html(doc), '<p>Text line 1\nText line 2</p>\n')
+        self.assertEqual(org_to_html(doc), '<p>Text line 1\nText line 2</p>')
 
         doc_str = 'Text\n\nText2'
         doc = parser.parse(doc_str)
         self.assertEqual(org_to_html(doc), 
-                         '<p>Text</p>\n<p></p>\n<p>Text2</p>\n')
+                         '<p>Text</p><p></p><p>Text2</p>')
 
     def test_lists(self):
         """Lists should produce <ul>/<ol> and <li> elements"""
 
         doc_str = '+ One\n+ Two'
         doc = parser.parse(doc_str)
-        self.assertEqual(org_to_html(doc), 
-                         '<ul><li>One</li><li>Two></li></ul>')
+        self.assertEqual(org_to_html(doc), '<ul><li>One</li><li>Two</li></ul>')
