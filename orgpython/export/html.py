@@ -6,6 +6,23 @@ Parsed Org-Tree to HTML conversion
 import StringIO
 import re
 
+# text substitutions
+text_subs = [
+    (r'/([^/]*)/', r'<i>\1</i>'),
+    (r'\*([^*]*)\*', r'<b>\1</b>'),
+    (r'_([^_]*)_', r'<u>\1</u>')
+    ]
+
+def text_to_html(text):
+    """Convert any special sequences in text to HTML. These can appear in
+    Headlines, TextNodes or Lists.
+    """
+    for pattern, repl in text_subs:
+        text = re.sub(pattern, repl, text)
+
+    return text
+
+
 class EnterElement:
     def __init__(self, element):
         self.element = element
@@ -19,13 +36,7 @@ class EnterElement:
                                           self.element.level)
 
         elif class_name == 'TextNode':
-            # convert formatted words
-            text = str(self.element)
-            text = re.sub(r'/([^/]*)/', r'<i>\1</i>', text)
-            text = re.sub(r'\*([^*]*)\*', r'<b>\1</b>', text)
-            text = re.sub(r'_([^_]*)_', r'<u>\1</u>', text)
-
-            return '<p>%s</p>' % text
+            return '<p>%s</p>' % text_to_html(str(self.element))
 
         elif class_name == 'ListNode':
             if self.element.ordered:
