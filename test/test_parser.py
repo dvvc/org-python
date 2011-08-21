@@ -137,42 +137,68 @@ class TestParser(unittest.TestCase):
         list_str = '- Item 1\n- Item 2\n- Item 3'
         doc = parser.parse(list_str)
 
-        self.assertEqual(len(doc.children()), 3)
+        self.assertEqual(len(doc.children()), 1)
 
-        li1 = doc.children()[0]
-        self.assertTrue(isinstance(li1, parser.UnorderedListNode))
-        self.assertEqual(li1.char, '-')
-        self.assertEqual(li1.level, 0)
+        ul = doc.children()[0]
+        self.assertEqual(len(ul.children), 3)
+
+        li1 = ul.children[0]
+        self.assertTrue(isinstance(li1, parser.ListItemNode))
+        self.assertEqual(li1.parent.char, '-')
+        self.assertEqual(li1.parent.level, 0)
         self.assertEqual(li1.text, 'Item 1')
         
-        list_str = '* Headline 1\n- One\n + One.One\n + One.Two'
+        list_str = '- One\n + One.One\n + One.Two'
         doc = parser.parse(list_str)
 
         self.assertEqual(len(doc.children()), 1)
 
-        hl = doc.children()[0]
-        self.assertEqual(len(hl.children), 1)
+        ul = doc.children()[0]
+        self.assertEqual(len(ul.children), 1)
         
-        li = hl.children[0]
-        self.assertEqual(len(li.children), 2)
+        li1 = ul.children[0]
+        self.assertEqual(len(li1.children), 1)
+
+        ul2 = li1.children[0]
+        self.assertEqual(len(ul2.children), 2)
 
         list_str = '* H\n- L\ntext\n** H\n + L\n  + L'
         doc = parser.parse(list_str)
 
         self.assertEqual(len(doc.children()), 1)
         
-        hl = doc.children()[0]
-        self.assertEqual(len(hl.children), 2)
+        h1 = doc.children()[0]
+        self.assertEqual(len(h1.children), 2)
 
-        li = hl.children[0]
+        ul = h1.children[0]
+        self.assertEqual(len(ul.children), 1)
+
+        li = ul.children[0]
         self.assertEqual(len(li.children), 1)
 
-        hl2 = hl.children[1]
-        self.assertEqual(len(hl2.children), 1)
+        text = li.children[0]
+        self.assertEqual(''.join(text.lines), 'text')
 
-        li = hl2.children[0]
-        self.assertEqual(len(li.children), 1)
+        h2 = h1.children[1]
+        self.assertEqual(len(h2.children), 1)
 
+        ul = h2.children[0]
+        self.assertEqual(len(ul.children), 1)
+
+        list_str = '- L0\n   + L3\n  + L2\n - L1'
+        doc = parser.parse(list_str)
+
+        self.assertEqual(len(doc.children()), 1)
+
+        ul1 = doc.children()[0]
+        self.assertEqual(len(ul1.children), 1)
+        self.assertTrue(isinstance(ul1.children[0], parser.ListItemNode))
+
+        l0 = ul1.children[0]
+        self.assertEqual(len(l0.children), 3)
+
+
+        list_str = 'text\n   - L3\n- L0'
 
     def test_ordered_lists(self):
         """Ordered lists are the same as Unordered ones, but have numbers and
@@ -185,7 +211,7 @@ class TestParser(unittest.TestCase):
         self.assertEqual(len(doc.children()), 1)
 
         ol = doc.children()[0]
-        self.assertTrue(isinstance(ol, parser.OrderedListNode))
+        self.assertTrue(isinstance(ol, parser.ListNode))
 
         self.assertEqual(str(doc), list_str)
 
@@ -195,9 +221,30 @@ class TestParser(unittest.TestCase):
         self.assertEqual(len(doc.children()), 1)
 
         ul = doc.children()[0]
-        self.assertEqual(len(ul.children), 2)
+        self.assertEqual(len(ul.children), 1)
 
+        li = ul.children[0]
+        ol = li.children[0]
+
+        self.assertEqual(len(ol.children), 2)
+
+
+    def test_list_representation(self):
+        """Test that different list representations are correct"""
         
+        lr = ['- L1\n- L2\n- L3',
+              'text\n- L1\n- L2\ntext\n- L3',
+              '* H\n- L1\n - L2\n** H\n- L3',
+              '   - L1\n  - L2\n - L3',
+              '- L1\n   - L2\n - L3'
+              ]
+
+        for l in lr:
+            self.assertEqual(l, str(parser.parse(l)))
+            
+            
+
+
     def test_options(self):
         """The document may have options in the form #+NAME: VALUE"""
 

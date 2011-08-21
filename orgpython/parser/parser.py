@@ -82,17 +82,21 @@ class HeadlineNode(OrgNode):
 
         return hl_str + children_str
 
-class UnorderedListNode(OrgNode):
-    """An unordered list item"""
-    def __init__(self, parent, char, level, text):
+class ListNode(OrgNode):
+    """Base class for Lists"""
+    def __init__(self, parent, char, level):
         OrgNode.__init__(self, parent)
-        self.char = char 
+        self.char = char
         self.level = level
+
+class ListItemNode(OrgNode):
+    
+    def __init__(self, parent, text):
+        OrgNode.__init__(self, parent)
         self.text = text
 
-
     def __str__(self):
-        hl_str = self.level * ' ' + self.char + ' ' + self.text
+        hl_str = self.parent.level * ' ' + self.parent.char + ' ' + self.text
         children_str = OrgNode.__str__(self)
 
         if children_str != '':
@@ -100,11 +104,6 @@ class UnorderedListNode(OrgNode):
 
         return hl_str + children_str
 
-
-class OrderedListNode(UnorderedListNode):
-    """An ordered list node"""
-    def __init__(self, parent, number, char, level, text):
-        UnorderedListNode.__init__(self, parent, number+char, level, text)
 
 class LineMatcher:
     """Helper class for compiling all possible patterns and performing line by
@@ -115,7 +114,7 @@ class LineMatcher:
           'OPTION': re.compile(r'^#\+([A-Z_]+):(.*)$'),
           'HEADLINE': re.compile(r'^(\*+)\s(.*)$'),
           'ULIST': re.compile(r'^(\s*)([\+\-\*])\s(.*)$'),
-          'OLIST': re.compile(r'^(\s*)(\d+)([\.\)])\s(.*)$'),
+          'OLIST': re.compile(r'^(\s*)(\d+[\.\)])\s(.*)$'),
           'EMPTYLINE': re.compile(r'^\s*$'),
           }
 
@@ -137,6 +136,7 @@ class LineMatcher:
 
         return self.match
 
+# This works only with Headlines
 def __find_parent(level, prev):
     """Find the parent of a new node with the given level in the tree hierarchy,
     if the previous considered node is prev.
@@ -151,6 +151,40 @@ def __find_parent(level, prev):
         parent = prev.parent
 
     return parent
+
+def __find_list_parent(level, parent, char):
+    """Similar to __find_parent, but in this case it tries to find a list's
+    parent. The parent node can either be a ListItemNode or e.g. a
+    HeadlineNode. In the first case we just return the LI's parent, in the
+    second case we create a new ListNode with the --non-list-- parent and return
+    it.
+    """
+    while level < parent.level:
+        parent = parent.parent
+        if isinstance(parent, ListItemNode):
+            parent = parent.parent
+        elif not isinstance(parent, ListNode):
+            return ListNode(parent, char, level)
+        else:
+            raise Exception("ListNode is parent of ListNode!!")
+
+    # There is an existing list
+    if parent.level == level:
+        # same level as previous list, it is a child
+        return parent
+
+    elif parent.level < level:
+        # higher level, create a new list under the last child of the previous
+        # list
+        parent = parent.children[-1]
+        return ListNode(parent, char, level)
+
+    else:
+        raise Exception("This shouldn't happen!")
+
+
+    return parent
+    
 
 def parse(doc):
     """Parse an org document.
@@ -200,36 +234,22 @@ def parse(doc):
             prev_list = None
             prev_text = None
 
-        elif matcher.matches(line, 'OLIST'):
-            level = len(matcher.match.group(1))
-            number = matcher.match.group(2)
-            char = matcher.match.group(3)
-            text = matcher.match.group(4)
-
-            if prev_list == None:
-                parent = prev_node
-            else:
-                parent = __find_parent(level, prev_list)
-            
-            list_node = OrderedListNode(parent, number, char, level, text)
-            prev_list = list_node
-            prev_node = list_node
-            prev_text = None
-
-
-        elif matcher.matches(line, 'ULIST'):
+        elif matcher.matches(line, 'ULIST') or matcher.matches(line, 'OLIST'):
             level = len(matcher.match.group(1))
             char = matcher.match.group(2)
             text = matcher.match.group(3)
 
+            # If there is no previous list, create a new one
             if prev_list == None:
-                parent = prev_node
+                parent_list = ListNode(prev_node, char, level)
             else:
-                parent = __find_parent(level, prev_list)
-            
-            list_node = UnorderedListNode(parent, char, level, text)
-            prev_list = list_node
-            prev_node = list_node
+                # find the correct parent from the previous list
+                parent_list = __find_list_parent(level, prev_list, char)
+
+            list_item = ListItemNode(parent_list, text)
+
+            prev_list = parent_list
+            prev_node = list_item
             prev_text = None
 
         elif matcher.matches(line, 'EMPTYLINE'):

@@ -34,6 +34,10 @@ def org_to_html(tree):
                 output.write("<h%d>%s</h%d>\n" % (el.level, el.text, el.level))
         elif class_name == 'TextNode':
             output.write('<p>%s</p>\n' % str(el))
+        elif class_name == 'ListNode':
+            output.write('<ul>')
+        elif class_name == 'ListItemNode':
+            output.write('<li>%s</li>\n' % el.text)
         # End Handling the node
 
         elements = el.children + elements

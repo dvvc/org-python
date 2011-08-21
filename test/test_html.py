@@ -44,3 +44,11 @@ class TestHtml(unittest.TestCase):
         doc = parser.parse(doc_str)
         self.assertEqual(org_to_html(doc), 
                          '<p>Text</p>\n<p></p>\n<p>Text2</p>\n')
+
+    def test_lists(self):
+        """Lists should produce <ul>/<ol> and <li> elements"""
+
+        doc_str = '+ One\n+ Two'
+        doc = parser.parse(doc_str)
+        self.assertEqual(org_to_html(doc), 
+                         '<ul><li>One</li><li>Two></li></ul>')
