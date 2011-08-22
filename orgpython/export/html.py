@@ -51,7 +51,7 @@ class EnterElement:
             else:
                 return '<ul>'
         elif class_name == 'ListItemNode':
-            return'<li>%s' % self.element.text
+            return'<li>%s' % text_to_html(self.element.text)
         
 
 class LeaveElement:

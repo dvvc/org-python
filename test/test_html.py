@@ -80,3 +80,9 @@ class TestHtml(unittest.TestCase):
         self._assert_html('- A\n   - B\n  - C',
                           '<ul><li>A<ul><li>B</li></ul><ul><li>C</li></ul>\
 </li></ul>')
+
+    def test_text_in_lists(self):
+
+        self._assert_html('- [[A][B]]\n- *bold*',
+                          '<ul><li><a href="#A">B</a></li><li><b>bold</b></li>\
+</ul>')
