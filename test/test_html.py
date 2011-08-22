@@ -58,6 +58,12 @@ class TestHtml(unittest.TestCase):
                           '<p><span class="datetime">2011-08-21 Sun 10:00\
 </span></p>')
 
+        self._assert_html('[[http://www.itsahack.com][Go]]',
+                          '<p><a href="http://www.itsahack.com">Go</a></p>')
+
+        self._assert_html('[[sometag][Goto Tag]]',
+                          '<p><a href="#sometag">Goto Tag</a></p>')
+
     def test_lists(self):
         """Lists should produce <ul>/<ol> and <li> elements"""
 
