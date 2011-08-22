@@ -4,3 +4,18 @@
 * HL
 
 * A title with a [[link][foo]] *foo* 
+
+
+<2011-08-21 Sun>
+
+<2011-08-21 Sun 19:53>
+
+[[a link][linky]]
+
+[[link.com][foo]]
+
+[[www.bar.com][bar]]
+
+[[http://www.baz.com][baz]]
+
+[[ftp://boo.com][boo]]

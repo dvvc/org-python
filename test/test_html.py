@@ -51,6 +51,13 @@ class TestHtml(unittest.TestCase):
         self._assert_html('Two *bold* *words*',
                           '<p>Two <b>bold</b> <b>words</b></p>')
 
+        self._assert_html('<2011-08-21 Sun>',
+                          '<p><span class="date">2011-08-21 Sun</span></p>')
+
+        self._assert_html('<2011-08-21 Sun 10:00>',
+                          '<p><span class="datetime">2011-08-21 Sun 10:00\
+</span></p>')
+
     def test_lists(self):
         """Lists should produce <ul>/<ol> and <li> elements"""
 
