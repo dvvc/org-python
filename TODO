@@ -1,0 +1,25 @@
+
+
+* TODO Allow formatted text in Headlines
+
+* TODO Allow formatted text in Lists
+
+* TODO Disable text formatting inside Links
+  Perhaps by creating a LinkNode?
+
+* TODO Use the TITLE option
+
+* TODO Add option to not print empty TextNodes when exporting to HTML
+
+* TODO Make this work: /elisp shell scripting/
+
+* TODO A ListItem may have multiple lines if those after the first one have the same indentation as the previous
+
+* TODO Add other text formats[/]
+  - [ ] =code= 
+  - [ ] ~verbatim~ 
+  - [ ] +strike through+
+
+* TODO Add support for BEGIN_SRC
+
+* 
