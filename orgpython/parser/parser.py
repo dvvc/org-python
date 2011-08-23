@@ -256,8 +256,12 @@ def parse(doc):
         elif matcher.matches(line, 'EMPTYLINE'):
             # An empty line starts a new TextNode. We add an empty TextNode to
             # keep all information. In 'prettified' output those shouldn't be
-            # used 
+            # used. Also, any current list is ended. Finally, we set the
+            # prev_node to be a hl (since we want to forget about the current
+            # list) 
             prev_text = None
+            prev_list = None
+            prev_node = prev_hl
             TextNode(prev_node)
         else:
             # Text
