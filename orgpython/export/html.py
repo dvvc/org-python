@@ -8,9 +8,9 @@ import re
 
 # text substitutions
 text_subs = [
-    (r'/([^/]+)/', r'<i>\1</i>'),
-    (r'\*([^*]+)\*', r'<b>\1</b>'),
-    (r'_([^_]+)_', r'<u>\1</u>'),
+    (r'/([^/\s]+)/', r'<i>\1</i>'),
+    (r'\*([^*\s]+)\*', r'<b>\1</b>'),
+    (r'_([^_\s]+)_', r'<u>\1</u>'),
     (r'<(\d{4}-\d{2}-\d{2} [a-zA-Z]{3} \d{2}:\d{2})>',
      r'<span class="datetime">\1</span>'),
     (r'<(\d{4}-\d{2}-\d{2} [a-zA-Z]{3})>', r'<span class="date">\1</span>'),

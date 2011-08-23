@@ -45,6 +45,10 @@ class TestHtml(unittest.TestCase):
         self._assert_html('Text with /italics/',
                           '<p>Text with <i>italics</i></p>')
 
+
+        self._assert_html('Text without / italics/',
+                          '<p>Text without / italics/</p>')
+
         self._assert_html('Text with _underscore_',
                           '<p>Text with <u>underscore</u></p>')
 
