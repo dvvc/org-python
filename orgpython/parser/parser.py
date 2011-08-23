@@ -197,7 +197,10 @@ def parse(doc):
     if isinstance(doc, str):
         doc_handle = StringIO.StringIO(doc)
     else:
-        raise Exception('Not supported')
+        # Could check for other types, but let's assume doc is a file-like
+        # object
+        doc_handle = doc
+
 
     orgdoc = OrgDoc()
 
