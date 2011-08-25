@@ -1,4 +1,4 @@
-
+* TODO Add to-do items
 
 * TODO Allow formatted text in Headlines
 
@@ -20,6 +20,17 @@
   - [ ] ~verbatim~ 
   - [ ] +strike through+
 
-* TODO Add support for BEGIN_SRC
+* TODO Add support for blocks like BEGIN_SRC, BEGIN_QUOTE, BEGIN_CENTER
+  - Also, add one for sidenodes BEGIN_SIDENOTE
+  
+* TODO horizontal rules with '-----'
 
-* 
+* TODO Date ranges, date intervals
+
+* TODO Line breaks in paragraphs '\\'
+
+* TODO Tables (also with captions and labels)
+
+* TODO Include files with #+INCLUDE
+
+
