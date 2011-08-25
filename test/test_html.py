@@ -8,12 +8,12 @@ class TestHtml(unittest.TestCase):
     def setUp(self):
         pass
 
-    def _assert_html(self, org_str, html_str):
+    def _assert_html(self, org_str, html_str, **export_options):
         """Helper method to assert the HTML representation of a given org string
         is what it should be.
         """
         doc = parser.parse(org_str)
-        self.assertEqual(org_to_html(doc), html_str)
+        self.assertEqual(org_to_html(doc, **export_options), html_str)
 
     def test_empty_doc(self):
         """An empty tree exported to HTML should generate an empty string"""
@@ -39,21 +39,40 @@ class TestHtml(unittest.TestCase):
         self._assert_html('Text\n\nText2',
                           '<p>Text</p><p></p><p>Text2</p>')
 
+        self._assert_html('Text\n\nText2',
+                          '<p>Text</p><p>Text2</p>',
+                          remove_empty_p=True)
+
+        self._assert_html('Text\n\nText2',
+                          '<p>Text</p><p></p><p>Text2</p>')
+
+
         self._assert_html('Text with *bold* words',
                           '<p>Text with <b>bold</b> words</p>')
-        
+
+        self._assert_html('*elisp shell scripting*',
+                          '<p><b>elisp shell scripting</b></p>')
+
         self._assert_html('Text with /italics/',
                           '<p>Text with <i>italics</i></p>')
-
 
         self._assert_html('Text without / italics/',
                           '<p>Text without / italics/</p>')
 
+        self._assert_html('/elisp shell scripting/',
+                          '<p><i>elisp shell scripting</i></p>')
+
         self._assert_html('Text with _underscore_',
                           '<p>Text with <u>underscore</u></p>')
 
+        self._assert_html('_elisp shell scripting_',
+                          '<p><u>elisp shell scripting</u></p>')
+
+
         self._assert_html('Two *bold* *words*',
                           '<p>Two <b>bold</b> <b>words</b></p>')
+
+    def test_dates(self):
 
         self._assert_html('<2011-08-21 Sun>',
                           '<p><span class="date">2011-08-21 Sun</span></p>')
@@ -61,6 +80,10 @@ class TestHtml(unittest.TestCase):
         self._assert_html('<2011-08-21 Sun 10:00>',
                           '<p><span class="datetime">2011-08-21 Sun 10:00\
 </span></p>')
+
+
+
+    def test_links(self):
 
         self._assert_html('[[http://www.itsahack.com][Go]]',
                           '<p><a href="http://www.itsahack.com">Go</a></p>')

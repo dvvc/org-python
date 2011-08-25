@@ -4,7 +4,11 @@
 Convert from an org-file to HTML using the parsing and exporting capabilities of
 org-python.
 
-Usage: %s [-o outfile] input.org
+Usage: %s [-o outfile] [--no-empty-text] input.org 
+  
+    outfile           :: the output HTML file
+    --no-empty-text   :: remove empty paragraphs
+
 """
 
 import getopt
@@ -20,18 +24,23 @@ def usage():
 if __name__ == '__main__':
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'o:', ['output='])
+        opts, args = getopt.getopt(sys.argv[1:], \
+                                       'o:', \
+                                       ['output=','no-empty-text'])
     except getopt.GetoptError, e:
         print e
         usage()
 
     output = None
+    export_options = {}
 
     for opt, arg in opts:
         if opt in ('-o', '--output'):
             output = arg
 
-
+        elif opt == '--no-empty-text':
+            export_options['remove_empty_p'] = True
+            
     if len(args) != 1:
         print 'Need to specify input file'
         usage()
@@ -56,7 +65,7 @@ if __name__ == '__main__':
     else:
         out = sys.stdout
 
-    out.write(str(org_to_html(org_tree)))
+    out.write(str(org_to_html(org_tree, **export_options)))
 
     out.close()
                         

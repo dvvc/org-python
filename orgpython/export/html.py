@@ -8,17 +8,32 @@ import re
 
 # text substitutions
 text_subs = [
-    (r'/([^/\s]+)/', r'<i>\1</i>'),
-    (r'\*([^*\s]+)\*', r'<b>\1</b>'),
-    (r'_([^_\s]+)_', r'<u>\1</u>'),
+    # italics
+    (r'/([^/\s][^/]+[^/\s])/', r'<i>\1</i>'),
+    # bold
+    (r'\*([^*\s][^*]+[^*\s])\*', r'<b>\1</b>'),
+    # underscore
+    (r'_([^_\s][^_]+[^_\s])_', r'<u>\1</u>'),
+    # datetime
     (r'<(\d{4}-\d{2}-\d{2} [a-zA-Z]{3} \d{2}:\d{2})>',
      r'<span class="datetime">\1</span>'),
+    # date
     (r'<(\d{4}-\d{2}-\d{2} [a-zA-Z]{3})>', r'<span class="date">\1</span>'),
+    # external link
     (r'\[\[([a-zA-Z]+://[^\]]+)\]\[([^\]]+)\]\]',
      r'<a href="\1">\2</a>'),
+    # internal link
     (r'\[\[([^\]]+)\]\[([^\]]+)\]\]',
      r'<a href="#\1">\2</a>'),
     ]
+
+# Global export options, set up in org_to_html
+_default_options = {
+    'remove_empty_p': False
+}
+
+_export_options = {}
+
 
 def text_to_html(text):
     """Convert any special sequences in text to HTML. These can appear in
@@ -43,13 +58,21 @@ class EnterElement:
                                           self.element.level)
 
         elif class_name == 'TextNode':
-            return '<p>%s</p>' % text_to_html(str(self.element))
+
+            text_str = text_to_html(str(self.element))
+            if _export_options['remove_empty_p'] and re.match('^\s*$', text_str):
+                output = ''
+            else:
+                output = '<p>%s</p>' % text_str
+
+            return output
 
         elif class_name == 'ListNode':
             if self.element.ordered:
                 return '<ol>'
             else:
                 return '<ul>'
+   
         elif class_name == 'ListItemNode':
             return'<li>%s' % text_to_html(self.element.text)
         
@@ -69,11 +92,16 @@ class LeaveElement:
         elif class_name == 'ListItemNode':
             return '</li>'
 
-def org_to_html(tree):
+def org_to_html(tree, **export_options):
     """Traverse the org tree and execute the appropriate function to generate
     html code.
     """
     
+    # update global options
+    # FIXME: Perhaps there's a better way of doing this?
+    _export_options.update(_default_options)
+    _export_options.update(export_options)
+
     events = []
     output = StringIO.StringIO()
 

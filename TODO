@@ -1,21 +1,17 @@
+#+TODO: TODO CURRENT IDEA | DONE CANCELLED
+
 * TODO Add to-do items
 
 * TODO Allow formatted text in Headlines
-
-* TODO Allow formatted text in Lists
 
 * TODO Disable text formatting inside Links
   Perhaps by creating a LinkNode?
 
 * TODO Use the TITLE option
 
-* TODO Add option to not print empty TextNodes when exporting to HTML
+* CURRENT A ListItem may have multiple lines if those after the first one have the same indentation as the previous
 
-* TODO Make this work: /elisp shell scripting/
-
-* TODO A ListItem may have multiple lines if those after the first one have the same indentation as the previous
-
-* TODO Add other text formats[/]
+* TODO Add other text formats [0/3]
   - [ ] =code= 
   - [ ] ~verbatim~ 
   - [ ] +strike through+
@@ -34,3 +30,6 @@
 * TODO Include files with #+INCLUDE
 
 
+* DONE Add option to not print empty TextNodes when exporting to HTML
+* DONE Allow formatted text in Lists
+* DONE Make this work: /elisp shell scripting/
