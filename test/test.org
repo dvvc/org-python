@@ -1,21 +1,74 @@
-# foo
-#+TITLE: XXX:foo
+#+TITLE: Test Org File
+#+OPTIONS: toc:nil
 
-* HL
+* Heading One
+  - A list
+  - with *bold*, /italic/, and _underscore_
+  - also =code=, ~verbatim~ and +strikethrough+
 
-* A title with a [[link][foo]] *foo* 
+* Heading Two
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris imperdiet, ipsum
+vel tincidunt imperdiet, lacus nisi iaculis lectus, eget pellentesque nulla
+velit ut *odio*. Duis /ipsum/ justo, molestie ac hendrerit at, convallis in
+ante. Nulla in odio vel ante vulputate sollicitudin. Integer vitae tristique
+justo. Ut quis est nulla. Sed facilisis enim id neque / sodales in molestie
+lorem vehicula. Maecenas _cursus_ quam vel ligula facilisis viverra. Fusce
+vulputate consectetur purus, a dapibus nunc eleifend id.
+
+* Here be Ordered lists
+  1. Item one
+  2. Item two
+     1. Item two.dot.one
+        which follows in the next line
+  3. Item three
+     1. Three dot one
+     2. and three dot two
+
+* org-mode publishing setup
+A link to the org-mode's manual [[http://orgmode.org/manual/Introduction.html#Introduction][here]].
+
+Quisque vel sem id orci interdum viverra nec at turpis. Vestibulum hendrerit,
+tellus in dapibus pharetra, velit lacus blandit sem, at rutrum lectus orci ac
+dui. 
+
+Aenean tortor neque, commodo vel tincidunt sed, egestas vitae risus. Suspendisse
+sit amet leo vitae diam ultricies tempus blandit sed lacus.
+
+Sed sed lacus sed velit malesuada tincidunt eu eu neque. Aliquam erat
+volutpat. Mauris placerat dapibus pulvinar. Fusce dolor leo, vehicula ut
+vehicula in, adipiscing eu tortor.
+
+#+BEGIN_SRC elisp
+(add-hook 'python-mode-hook
+	  '(lambda ()
+	     (define-key python-mode-map "\C-cn" 
+	       '(lambda ()
+		  (interactive)
+		  (shell-command "nosetests")))))
+#+END_SRC
+
+  - An unordered list under a Headline
+
+  - With items separated by a space
+    Some text under the items
+
+  - Another item
+Text without intentation
+  
+  - And finally
 
 
-<2011-08-21 Sun>
+A paragraph after the list.
 
-<2011-08-21 Sun 19:53>
+* Another Headline
 
-[[a link][linky]]
+#+HTML: <em>Some inline HTML</em>
 
-[[link.com][foo]]
+An horizontal rule
 
-[[www.bar.com][bar]]
+-----
 
-[[http://www.baz.com][baz]]
+** And we continue with a second level headline
 
-[[ftp://boo.com][boo]]
+   In here
+
