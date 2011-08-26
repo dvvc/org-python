@@ -215,6 +215,27 @@ class TestParser(unittest.TestCase):
         self.assertTrue(len(doc.children()[1].children), 1)
         self.assertTrue(len(doc.children()[2].children), 1)
 
+
+        # A text node with the equal or less indentation than the last list item
+        # ends that list
+        list_str = '- list item\ntext'
+        doc = parser.parse(list_str)
+        self.assertEqual(len(doc.children()), 2)
+
+        # If the text node has more indentation, it is part of the list item
+        list_str = '- list item\n text'
+        doc = paser.parse(list_str)
+        self.assertEqual(len(doc.children()), 1)
+        self.assertEqual(len(doc.children()[0].children[0],children), 0)
+
+        # If there is an empty line after the list item, then the TextNode is a
+        # child of the item
+        list_str = '- list item\n\n  text'
+        doc = parser.parse(list_str)
+        self.assertEqual(len(doc.children()), 1)
+        self.assertEqual(len(doc.children()[0].children[0].children), 1)
+
+
     def test_ordered_lists(self):
         """Ordered lists are the same as Unordered ones, but have numbers and
         either the character '.' or ')' after it
