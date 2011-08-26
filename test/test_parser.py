@@ -197,13 +197,13 @@ class TestParser(unittest.TestCase):
         l0 = ul1.children[0]
         self.assertEqual(len(l0.children), 3)
 
-        list_str = '* HL\n- A\n- B\n\ntext after list'
+        list_str = '* HL\n- A\n- B\n\n\ntext after list'
         doc = parser.parse(list_str)
 
         hl = doc.children()[0]
 
-        # Since there is an empty line after the list, the TextNode should be a
-        # child of the HeadlineNode, not the last ListItemNode. Since we
+        # Since there are two empty lines after the list, the TextNode should be
+        # a child of the HeadlineNode, not the last ListItemNode. Since we
         # represent empty lines as empty TextNodes, there are three children
         # under the HL: the list, the (empty) TextNode and the other TextNode
         self.assertEqual(len(hl.children), 3)

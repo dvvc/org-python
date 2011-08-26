@@ -29,6 +29,7 @@
 
 * TODO Include files with #+INCLUDE
 
+* TODO Add description lists
 
 * DONE Add option to not print empty TextNodes when exporting to HTML
 * DONE Allow formatted text in Lists
