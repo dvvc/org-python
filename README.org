@@ -1,0 +1,28 @@
+* Org-Python
+  
+  Org-Python is a library for parsing Emacs org-mode files and exporting them to
+  HTML. 
+
+
+* Usage
+
+  The parser module accepts either a file-like object or a string with the text
+  to be parsed. It creates a parse tree that can be used to generate HTML code
+  with the export.html module.
+
+  #+BEGIN_SRC python
+  
+  from orgpython.parser import parser
+  from orgpython.export import html
+
+  f = open('myfile.org', 'r')
+  orgtree = parser.parse(f)
+
+  f.close()
+
+  print(html.org_to_html(orgtree))
+
+  #+END_SRC
+
+
+  
