@@ -7,6 +7,7 @@ Supported features:
   - Comments
   - Text
   - Headlines
+  - Lists
 
 """
 import re
@@ -117,6 +118,7 @@ class LineMatcher:
           'ULIST': re.compile(r'^(\s*)([\+\-\*])\s(.*)$'),
           'OLIST': re.compile(r'^(\s*)(\d+[\.\)])\s(.*)$'),
           'EMPTYLINE': re.compile(r'^\s*$'),
+          'TEXT': re.compile(r'^(\s*)(.*)$'),
           }
 
     def __init__(self):
@@ -137,10 +139,12 @@ class LineMatcher:
 
         return self.match
 
-# This works only with Headlines
-def __find_parent(level, prev):
-    """Find the parent of a new node with the given level in the tree hierarchy,
-    if the previous considered node is prev.
+
+# TODO: The next three functions are very similar. Try to refactor them
+
+def __find_headline_parent(level, prev):
+    """Find the parent of a node with the given level in the tree hierarchy, if
+    the previous considered node is prev.
     """
     while level < prev.level:
         prev = prev.parent
@@ -153,8 +157,30 @@ def __find_parent(level, prev):
 
     return parent
 
+def __find_text_parent(level, prev):
+    """Find a parent for a text node in the tree hierarchy"""
+
+    while True:
+        # return either the first list item with a lower level, or the first
+        # head line
+        if isinstance(prev, ListNode):
+            if prev.level < level:
+                return prev.children[-1]
+            else:
+                prev = prev.parent
+
+        elif isinstance(prev, ListItemNode):
+            prev = prev.parent
+
+        elif isinstance(prev, HeadlineNode):
+            return prev
+
+        else:
+            raise Exception("Unandled node type")
+        
+
 def __find_list_parent(level, parent, char):
-    """Similar to __find_parent, but in this case it tries to find a list's
+    """Similar to __find_headline_parent, but in this case it tries to find a list's
     parent. The parent node can either be a ListItemNode or e.g. a
     HeadlineNode. In the first case we just return the LI's parent, in the
     second case we create a new ListNode with the --non-list-- parent and return
@@ -232,7 +258,7 @@ def parse(doc):
             level = matcher.match.group(1).count('*')
             text = matcher.match.group(2)
 
-            parent = __find_parent(level, prev_hl)
+            parent = __find_headline_parent(level, prev_hl)
 
             headline_node = HeadlineNode(parent, level, text)
             prev_node = headline_node
@@ -275,10 +301,36 @@ def parse(doc):
                 emptylines = 0
 
             TextNode(prev_node)
-        else:
-            # Text
+
+        elif matcher.matches(line, 'TEXT'):
+            level = len(matcher.match.group(1))
+
             if not prev_text:
-                prev_text = TextNode(prev_node)
+                
+                if prev_list:
+                    # Here we deal with all possible list termination cases that
+                    # involve text nodes.
+                    if level <= prev_list.level:
+                        # this text node ends the previous list. Either find an
+                        # ancestor list with a lower level or a HL node
+                        
+                        parent = __find_text_parent(level, prev_list)
+                        prev_list = None
+                        prev_node = prev_hl
+                    else:
+                        if emptylines == 0:
+                            # if text comes just after list item and there is no
+                            # empty line in between, instead of a text node,
+                            # this will be part of the previous list item text
+                            prev_list.children[-1].text += '\n' + line
+                            continue
+                        else:
+                            parent = prev_node
+                else:
+                    parent = prev_node
+                                           
+                        
+                prev_text = TextNode(parent)
 
             prev_text.lines.append(line)
             emptylines = 0

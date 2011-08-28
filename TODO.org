@@ -9,8 +9,6 @@
 
 * TODO Use the TITLE option
 
-* CURRENT A ListItem may have multiple lines if those after the first one have the same indentation as the previous
-
 * TODO Add other text formats [0/3]
   - [ ] =code= 
   - [ ] ~verbatim~ 
@@ -31,6 +29,11 @@
 
 * TODO Add description lists
 
+* TODO Deal with tabs instead of spaces
+
+* TODO Make sure we can re-create the original org-file from the tree
+
 * DONE Add option to not print empty TextNodes when exporting to HTML
 * DONE Allow formatted text in Lists
 * DONE Make this work: /elisp shell scripting/
+* DONE A ListItem may have multiple lines if those after the first one have the same indentation as the previous

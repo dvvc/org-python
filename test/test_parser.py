@@ -168,18 +168,19 @@ class TestParser(unittest.TestCase):
         self.assertEqual(len(doc.children()), 1)
         
         h1 = doc.children()[0]
-        self.assertEqual(len(h1.children), 2)
+        # H has three children: the list, the text, the 2nd level HL
+        self.assertEqual(len(h1.children), 3)
 
         ul = h1.children[0]
         self.assertEqual(len(ul.children), 1)
 
         li = ul.children[0]
-        self.assertEqual(len(li.children), 1)
+        self.assertEqual(len(li.children), 0)
 
-        text = li.children[0]
+        text = h1.children[1]
         self.assertEqual(''.join(text.lines), 'text')
 
-        h2 = h1.children[1]
+        h2 = h1.children[2]
         self.assertEqual(len(h2.children), 1)
 
         ul = h2.children[0]
@@ -224,16 +225,19 @@ class TestParser(unittest.TestCase):
 
         # If the text node has more indentation, it is part of the list item
         list_str = '- list item\n text'
-        doc = paser.parse(list_str)
+        doc = parser.parse(list_str)
         self.assertEqual(len(doc.children()), 1)
-        self.assertEqual(len(doc.children()[0].children[0],children), 0)
+        self.assertEqual(len(doc.children()[0].children[0].children), 0)
 
         # If there is an empty line after the list item, then the TextNode is a
         # child of the item
         list_str = '- list item\n\n  text'
         doc = parser.parse(list_str)
         self.assertEqual(len(doc.children()), 1)
-        self.assertEqual(len(doc.children()[0].children[0].children), 1)
+        li = doc.children()[0].children[0]
+
+        # list item has an empty TextNode and another one with text
+        self.assertEqual(len(li.children), 2)
 
 
     def test_ordered_lists(self):
