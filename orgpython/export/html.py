@@ -7,13 +7,17 @@ import StringIO
 import re
 
 # text substitutions
+# Explanation for text formatting: We want to match text surrounded by a special
+# character (e.g. /, *, _). However, if before the (first) special char there is
+# a backslash, then do not match. That produces the expression ([^\\]|\A)
+# --either a character which is not a backslash, or the start of a string--
 text_subs = [
     # italics
-    (r'/([^/\s][^/]+[^/\s])/', r'<i>\1</i>'),
+    (r'([^\\]|\A)/([^/\s][^/]+[^/\s\\])/', r'\1<i>\2</i>'),
     # bold
-    (r'\*([^*\s][^*]+[^*\s])\*', r'<b>\1</b>'),
+    (r'([^\\]|\A)\*([^*\s][^*]+[^*\s\\])\*', r'\1<b>\2</b>'),
     # underscore
-    (r'_([^_\s][^_]+[^_\s])_', r'<u>\1</u>'),
+    (r'([^\\]|\A)_([^_\s][^_]+[^_\s\\])_', r'\1<u>\2</u>'),
     # datetime
     (r'<(\d{4}-\d{2}-\d{2} [a-zA-Z]{3} \d{2}:\d{2})>',
      r'<span class="datetime">\1</span>'),
@@ -25,6 +29,8 @@ text_subs = [
     # internal link
     (r'\[\[([^\]]+)\]\[([^\]]+)\]\]',
      r'<a href="#\1">\2</a>'),
+    # escaped symbols
+    (r'\\([\*/_])', r'\1'),
     ]
 
 # Global export options, set up in org_to_html

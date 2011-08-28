@@ -72,6 +72,19 @@ class TestHtml(unittest.TestCase):
         self._assert_html('Two *bold* *words*',
                           '<p>Two <b>bold</b> <b>words</b></p>')
 
+    
+    def test_escaping(self):
+
+        self._assert_html('backslash \\', '<p>backslash \\</p>')
+
+
+        self._assert_html('this is not \\/italics/',
+                          '<p>this is not /italics/</p>')
+
+        self._assert_html('escaped *bold\\*',
+                          '<p>escaped *bold*</p>')
+
+
     def test_dates(self):
 
         self._assert_html('<2011-08-21 Sun>',
@@ -90,6 +103,10 @@ class TestHtml(unittest.TestCase):
 
         self._assert_html('[[sometag][Goto Tag]]',
                           '<p><a href="#sometag">Goto Tag</a></p>')
+
+#         self._assert_html('[[http://itsahack.com/projects/org-python][x]]',
+#                           '<p><a href="http://itsahack.com/projects/org-python"\
+# >x</a></p>')
 
     def test_lists(self):
         """Lists should produce <ul>/<ol> and <li> elements"""
