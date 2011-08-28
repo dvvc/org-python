@@ -282,9 +282,6 @@ class TestParser(unittest.TestCase):
         for l in lr:
             self.assertEqual(l, str(parser.parse(l)))
             
-            
-
-
     def test_options(self):
         """The document may have options in the form #+NAME: VALUE"""
 
@@ -295,3 +292,21 @@ class TestParser(unittest.TestCase):
         self.assertEqual(doc.options['TITLE'], 'The title')
 
         self.assertEqual(str(doc), options_str)
+
+
+    def test_horizontal_rule(self):
+        """An horizontal rule has 5 or more dashes. It breaks the flow of lists
+        and text"""
+
+        doc_str = '------'
+        doc = parser.parse(doc_str)
+        
+        self.assertEqual(len(doc.children()), 1)
+        self.assertTrue(isinstance(doc.children()[0], parser.HRuleNode))
+        self.assertEqual(str(doc), doc_str)
+
+        doc_str = '  - li 1\n-----\n  - li 2'
+        doc = parser.parse(doc_str)
+
+        self.assertEqual(len(doc.children()), 3)
+        self.assertEqual(str(doc), doc_str)

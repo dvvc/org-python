@@ -107,6 +107,15 @@ class ListItemNode(OrgNode):
         return hl_str + children_str
 
 
+class HRuleNode(OrgNode):
+    
+    def __init__(self, parent, text):
+        OrgNode.__init__(self, parent)
+        self.text = text
+
+    def __str__(self):
+        return self.text
+
 class LineMatcher:
     """Helper class for compiling all possible patterns and performing line by
     line matching.
@@ -117,6 +126,7 @@ class LineMatcher:
           'HEADLINE': re.compile(r'^(\*+)\s(.*)$'),
           'ULIST': re.compile(r'^(\s*)([\+\-\*])\s(.*)$'),
           'OLIST': re.compile(r'^(\s*)(\d+[\.\)])\s(.*)$'),
+          'HRULE': re.compile(r'^\s*\-{5,}\s*'),
           'EMPTYLINE': re.compile(r'^\s*$'),
           'TEXT': re.compile(r'^(\s*)(.*)$'),
           }
@@ -301,6 +311,15 @@ def parse(doc):
                 emptylines = 0
 
             TextNode(prev_node)
+
+        elif matcher.matches(line, 'HRULE'):
+            # Horizontal rules break the flow of lists and text
+            HRuleNode(prev_hl, line)
+
+            prev_text = None
+            prev_list = None
+            prev_node = prev_hl
+            emptylines = 0
 
         elif matcher.matches(line, 'TEXT'):
             level = len(matcher.match.group(1))

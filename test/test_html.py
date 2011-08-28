@@ -113,3 +113,14 @@ class TestHtml(unittest.TestCase):
         self._assert_html('- [[A][B]]\n- *bold*',
                           '<ul><li><a href="#A">B</a></li><li><b>bold</b></li>\
 </ul>')
+
+
+    def test_hr(self):
+        
+        self._assert_html('-----', '<hr/>')
+        
+        self._assert_html('- li1\n-----\n- li2',
+                          '<ul><li>li1</li></ul><hr/><ul><li>li2</li></ul>')
+
+        self._assert_html('text\n-----\ntext',
+                          '<p>text</p><hr/><p>text</p>')

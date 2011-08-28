@@ -17,8 +17,6 @@
 * TODO Add support for blocks like BEGIN_SRC, BEGIN_QUOTE, BEGIN_CENTER
   - Also, add one for sidenodes BEGIN_SIDENOTE
   
-* TODO horizontal rules with '-----'
-
 * TODO Date ranges, date intervals
 
 * TODO Line breaks in paragraphs '\\'
@@ -37,3 +35,4 @@
 * DONE Allow formatted text in Lists
 * DONE Make this work: /elisp shell scripting/
 * DONE A ListItem may have multiple lines if those after the first one have the same indentation as the previous
+* DONE horizontal rules with '-----'

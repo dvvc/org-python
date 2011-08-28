@@ -74,8 +74,10 @@ class EnterElement:
                 return '<ul>'
    
         elif class_name == 'ListItemNode':
-            return'<li>%s' % text_to_html(self.element.text)
-        
+            return '<li>%s' % text_to_html(self.element.text)
+
+        elif class_name == 'HRuleNode':
+            return '<hr/>'
 
 class LeaveElement:
     def __init__(self, element):
