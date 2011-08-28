@@ -1,35 +1,40 @@
 #+TODO: TODO CURRENT IDEA | DONE CANCELLED
 
-* TODO Add to-do items
+* TODO [#A] Add to-do items
 
-* TODO Allow formatted text in Headlines
-
-* TODO Disable text formatting inside Links
+* TODO [#A] Disable text formatting inside Links
   Perhaps by creating a LinkNode?
 
-* TODO Use the TITLE option
-
-* TODO Add other text formats [0/3]
+* TODO [#A] Add other text formats [0/3]
   - [ ] =code= 
   - [ ] ~verbatim~ 
   - [ ] +strike through+
 
-* TODO Add support for blocks like BEGIN_SRC, BEGIN_QUOTE, BEGIN_CENTER
-  - Also, add one for sidenodes BEGIN_SIDENOTE
-  
-* TODO Date ranges, date intervals
+* TODO [#A] Add support for blocks like BEGIN_SRC, BEGIN_QUOTE, BEGIN_CENTER
 
-* TODO Line breaks in paragraphs '\\'
+* TODO [#A] Add description lists
 
-* TODO Tables (also with captions and labels)
+* TODO [#B] Use the TITLE option
 
-* TODO Include files with #+INCLUDE
+* TODO [#B] Date ranges, date intervals
 
-* TODO Add description lists
+* TODO [#B] Line breaks in paragraphs '\\'
 
-* TODO Deal with tabs instead of spaces
+* TODO [#B] Tables (also with captions and labels)
 
-* TODO Make sure we can re-create the original org-file from the tree
+* TODO [#B] Deal with tabs instead of spaces
+
+* TODO [#C] Allow formatted text in Headlines
+
+* TODO [#C] Include files with #+INCLUDE
+
+* TODO [#C] Make sure we can re-create the original org-file from the tree
+
+-----
+
+* IDEA Add support for sidenotes to HTML with #+BEGIN_SIDENOTE
+
+-----
 
 * DONE Add option to not print empty TextNodes when exporting to HTML
 * DONE Allow formatted text in Lists
