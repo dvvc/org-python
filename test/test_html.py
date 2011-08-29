@@ -104,9 +104,9 @@ class TestHtml(unittest.TestCase):
         self._assert_html('[[sometag][Goto Tag]]',
                           '<p><a href="#sometag">Goto Tag</a></p>')
 
-#         self._assert_html('[[http://itsahack.com/projects/org-python][x]]',
-#                           '<p><a href="http://itsahack.com/projects/org-python"\
-# >x</a></p>')
+        self._assert_html('[[http://itsahack.com/projects/org-python][x]]',
+                          '<p><a href="http://itsahack.com/projects/org-python"\
+>x</a></p>')
 
     def test_lists(self):
         """Lists should produce <ul>/<ol> and <li> elements"""

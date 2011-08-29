@@ -2,9 +2,6 @@
 
 * TODO [#A] Add to-do items
 
-* TODO [#A] Disable text formatting inside Links
-  Perhaps by creating a LinkNode?
-
 * TODO [#A] Add other text formats [0/3]
   - [ ] =code= 
   - [ ] ~verbatim~ 
@@ -42,3 +39,4 @@
 * DONE A ListItem may have multiple lines if those after the first one have the same indentation as the previous
 * DONE horizontal rules with '-----'
 * DONE Allow escaping text format characters
+* DONE Disable text formatting inside Links

@@ -18,6 +18,8 @@ text_subs = [
     (r'([^\\]|\A)\*([^*\s][^*]+[^*\s\\])\*', r'\1<b>\2</b>'),
     # underscore
     (r'([^\\]|\A)_([^_\s][^_]+[^_\s\\])_', r'\1<u>\2</u>'),
+    # escaped symbols
+    (r'\\([\*/_])', r'\1'),
     # datetime
     (r'<(\d{4}-\d{2}-\d{2} [a-zA-Z]{3} \d{2}:\d{2})>',
      r'<span class="datetime">\1</span>'),
@@ -29,8 +31,6 @@ text_subs = [
     # internal link
     (r'\[\[([^\]]+)\]\[([^\]]+)\]\]',
      r'<a href="#\1">\2</a>'),
-    # escaped symbols
-    (r'\\([\*/_])', r'\1'),
     ]
 
 # Global export options, set up in org_to_html
@@ -41,10 +41,38 @@ _default_options = {
 _export_options = {}
 
 
+def _escape_links(text):
+    """Substitute special parameters inside links so that format is not applied
+    inside them
+    """
+
+    escaped_text = ''
+    last_index = 0
+
+    for match in re.finditer(r'\[\[([^\]]+)\]\[([^\]]+)\]\]', text):
+        href = match.group(1)
+        desc = match.group(2)
+
+        href = re.sub(r'(/|\*|_)', r'\\\1', href)
+        desc = re.sub(r'(/|\*|_)', r'\\\1', desc)
+
+        link = '[[%s][%s]]' % (href, desc)
+        escaped_text += text[last_index:match.start()] + link
+        last_index = match.end()
+
+    escaped_text += text[last_index:]
+
+    return escaped_text
+
+
 def text_to_html(text):
     """Convert any special sequences in text to HTML. These can appear in
     Headlines, TextNodes or Lists.
     """
+
+    text = _escape_links(text)
+
+    # apply all text transformations (also, unescaping links)
     for pattern, repl in text_subs:
         text = re.sub(pattern, repl, text)
 
