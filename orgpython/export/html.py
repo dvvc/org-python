@@ -35,7 +35,8 @@ text_subs = [
 
 # Global export options, set up in org_to_html
 _default_options = {
-    'remove_empty_p': False
+    'remove_empty_p': False,
+    'hl_offset': 0,
 }
 
 _export_options = {}
@@ -88,8 +89,9 @@ class EnterElement:
         class_name = self.element.__class__.__name__
 
         if class_name == 'HeadlineNode' and self.element.level != 0:
-            return '<h%d>%s</h%d>' % (self.element.level, self.element.text, \
-                                          self.element.level)
+
+            level = self.element.level + _export_options['hl_offset']
+            return '<h%d>%s</h%d>' % (level, self.element.text, level)
 
         elif class_name == 'TextNode':
 

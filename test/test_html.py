@@ -141,3 +141,11 @@ class TestHtml(unittest.TestCase):
 
         self._assert_html('text\n-----\ntext',
                           '<p>text</p><hr/><p>text</p>')
+
+
+    def test_hl_offset(self):
+        """When specifying a level_offset, add it to the headlines' level"""
+
+        self._assert_html('* foo', '<h1>foo</h1>')
+
+        self._assert_html('* foo', '<h2>foo</h2>', hl_offset=1)
